@@ -31,12 +31,12 @@ class Client(object):
 
 
 client1 = Client()
-client1.connectTo(target_host, target_port)
-client1.send("hello world")
+client1.connectTo(target_host, 9051)
+client1.send("test1")
 client1.receive(1024)
 
 
 client2 = Client()
-client2.connectTo(target_host, 1501)
+client2.connectTo(target_host, 9489)
 client2.send("hello universe")
 client2.receive(1024)
