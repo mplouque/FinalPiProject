@@ -3,7 +3,7 @@ from time import sleep
 
 # initialize the output pins
 pi0 = 17
-pi1 = 22
+pi1 = 27
 
 GPIO.setmode(GPIO.BCM)
 
@@ -43,4 +43,4 @@ state0 = 1 - state0
 state1 = 1 - state1
 
 
-#GPIO.cleanup()
+GPIO.cleanup()
