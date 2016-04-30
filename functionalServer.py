@@ -2,6 +2,20 @@ import socket
 import threading
 import time
 import csv
+import RPi.GPIO as GPIO
+
+# initialize the output pins
+pi0 = 17
+pi1 = 27
+
+GPIO.setmode(GPIO.BCM)
+
+# setup the pins as output pins
+GPIO.setup(pi0, GPIO.OUT)
+GPIO.setup(pi1, GPIO.OUT)
+GPIO.cleanup()
+
+
 # need to come up with a way to definitively determine who won the competition(see line 70 (may try writing to a file for permanent solution))
 
 # change to match number of potential connections from cyberstorm students
@@ -62,7 +76,12 @@ class Server(object):
             
             #TO DO
             # turn on led for the associated pi if ARRAY[ITERATION][3] ( a 0 or 1 value ) is one
-            
+            if (1 == 1):
+
+		# turn on pi 1
+		GPIO.output(pi0, 0)
+		GPIO.output(pi1, 1)
+		GPIO.cleanup()
             # exit the program entirely
             # exit(0)
             
