@@ -13,7 +13,6 @@ GPIO.setmode(GPIO.BCM)
 # setup the pins as output pins
 GPIO.setup(pi0, GPIO.OUT)
 GPIO.setup(pi1, GPIO.OUT)
-GPIO.cleanup()
 
 
 # need to come up with a way to definitively determine who won the competition(see line 70 (may try writing to a file for permanent solution))
@@ -77,17 +76,21 @@ class Server(object):
             #TO DO
             # turn on led for the associated pi if ARRAY[ITERATION][3] ( a 0 or 1 value ) is one
             if (1 == 1):
-
-		# turn on pi 1
-		GPIO.output(pi0, 0)
-		GPIO.output(pi1, 1)
-		GPIO.cleanup()
+		print 'turning on pi0 if led is off'
+		# turn on pi 0
+		GPIO.output(pi0, 1)
+		GPIO.output(pi1, 0)
             # exit the program entirely
             # exit(0)
             
         else:
             # send back a packet with the correct iteration number
-            client_socket.send("iteration: " + str(ITERATION) + '\n')
+		# turn on pi 1
+		client_socket.send("iteration: " + str(ITERATION) + '\n')
+
+        	    
+		GPIO.output(pi0, 0)
+		GPIO.output(pi1, 0)
             
         # close the connection 
         client_socket.close()
@@ -178,3 +181,4 @@ while True:
          # increment the global variable 
         ITERATION += 1
         
+# make sure to run GPIO.cleanup()
