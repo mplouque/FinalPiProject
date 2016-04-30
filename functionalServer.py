@@ -15,7 +15,7 @@ bind_ip = "127.0.0.1"
 # initial starting port
 bind_port = 9991
 # number of seconds before control to PI toggles
-TIME_INTERVAL = 10.0
+TIME_INTERVAL = 60.0
 
 
 # will need to store csv files into an array and use the matching index of iteration with the matching row in the csv file
@@ -133,7 +133,7 @@ client_handler2.start()
 
 while True:
     
-    if ( (time.time() - starttime) % TIME_INTERVAL) == 0:
+    if ( (time.time() - starttime) - TIME_INTERVAL) >= 0:
         # TO DO
         # will read in from the array at the beginning
         # change port to a new value
