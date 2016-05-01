@@ -1,15 +1,15 @@
 import socket, threading, time, csv
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 # initialize the output pins
 pi0 = 17
 pi1 = 27
 
-#GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BCM)
 
 # setup the pins as output pins
-#GPIO.setup(pi0, GPIO.OUT)
-#GPIO.setup(pi1, GPIO.OUT)
+GPIO.setup(pi0, GPIO.OUT)
+GPIO.setup(pi1, GPIO.OUT)
 
 
 # need to come up with a way to definitively determine who won the competition(see line 70 (may try writing to a file for permanent solution))
@@ -73,18 +73,18 @@ class Server(object):
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
-        elif (ARRAY[ITERATION][5] == str(0)):
+        elif (str(ARRAY[ITERATION][5]) == str(0)):
             # turn on pi 0
-            # GPIO.output(pi0, 1)
-            # GPIO.output(pi1, 0)
+            GPIO.output(pi0, 1)
+            GPIO.output(pi1, 0)
             # send back congratulations message!
             client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
         # pi 1 must be on
-        elif (ARRAY[ITERATION][5] == str(1)):
+        elif (str(ARRAY[ITERATION][5]) == str(1)):
             # turn on pi 0
-            # GPIO.output(pi1, 0)
-            # GPIO.output(pi0, 1)
+            GPIO.output(pi1, 0)
+            GPIO.output(pi0, 1)
             # send back congratulations message!
             client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
@@ -109,7 +109,7 @@ class Server(object):
                 
             try:
                 # server will bind itself to its ip and port numbers
-	        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.socket.bind((self.ip, self.port))
                 
@@ -150,6 +150,8 @@ starttime = time.time()
 # create the servers
 server0 = Server(bind_ip, int(ARRAY[ITERATION][1]))
 server1 = Server(bind_ip, int(ARRAY[ITERATION][3]))
+
+# change the message of the server to the correct row in the csv file(array)
 server0.changeMessage(str(ARRAY[ITERATION][2]))
 server1.changeMessage(str(ARRAY[ITERATION][4]))
  
