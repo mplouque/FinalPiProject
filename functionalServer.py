@@ -21,11 +21,11 @@ ABSOLUTE_MAX_NUMBER_OF_CONNECTIONS = 5
 ITERATION = 1
  
 # change to actual assigned IP on day of cyberstorm
-bind_ip = "127.0.0.1"
+bind_ip = "192.168.0.112"
 # initial starting port
 bind_port = 9991
 # number of seconds before control to PI toggles
-TIME_INTERVAL = 10.0
+TIME_INTERVAL = 60.0
 
 # will need to store csv files into an array and use the matching index of iteration with the matching row in the csv file
 # read the file and interact with it as an object
@@ -65,7 +65,9 @@ class Server(object):
         print "[*] Received: %s" % request
         
         # if correct message is not received
-        if str(request).lower() != self.message.lower():
+	print (str(request).lower() , self.message.lower())
+ 
+        if str(request).lower().strip("\n") != self.message.lower():
             # send back a packet with the correct iteration number
             client_socket.send("iteration: " + str(ITERATION) + '\n')
 
@@ -90,6 +92,8 @@ class Server(object):
         else:
             print "This should not happen"
             
+	print (str(request).lower().strip("\n") == self.message.lower().strip())
+
         # always close the connection 
         client_socket.close()
     
@@ -102,8 +106,10 @@ class Server(object):
         addressInUse = True 
         # ensures that if the timing doesn't line up exactly, the thread will wait until the addressInUse is released and then start its mainloop
         while addressInUse:
+                
             try:
                 # server will bind itself to its ip and port numbers
+	        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.socket.bind((self.ip, self.port))
                 
@@ -144,6 +150,9 @@ starttime = time.time()
 # create the servers
 server0 = Server(bind_ip, int(ARRAY[ITERATION][1]))
 server1 = Server(bind_ip, int(ARRAY[ITERATION][3]))
+server0.changeMessage(str(ARRAY[ITERATION][2]))
+server1.changeMessage(str(ARRAY[ITERATION][4]))
+ 
 
 # create the threads
 client_handler0 = threading.Thread(target=server0.mainloop)

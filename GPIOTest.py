@@ -16,7 +16,7 @@ state1 = 1
 # turn on pi 1
 GPIO.output(pi0, state0)
 GPIO.output(pi1, state1)
-sleep(0.5)
+sleep(2.0)
 state0 = 1 - state0
 state1 = 1 - state1
 
@@ -24,21 +24,21 @@ state1 = 1 - state1
 # give control to pi0
 GPIO.output(pi0, state0)
 GPIO.output(pi1, state1)
-sleep(0.5)
+sleep(2.0)
 state0 = 1 - state0
 state1 = 1 - state1
 
 # give control to pi1
 GPIO.output(pi0, state0)
 GPIO.output(pi1, state1)
-sleep(0.5)
+sleep(2.0)
 state0 = 1 - state0
 state1 = 1 - state1
 
 # give control to pi0
 GPIO.output(pi0, state0)
 GPIO.output(pi1, state1)
-sleep(0.5)
+sleep(2.0)
 state0 = 1 - state0
 state1 = 1 - state1
 
