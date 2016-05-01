@@ -73,7 +73,7 @@ class Server(object):
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
-        elif (ARRAY[ITERATION][5] == 0):
+        elif (ARRAY[ITERATION][5] == str(0)):
             # turn on pi 0
             # GPIO.output(pi0, 1)
             # GPIO.output(pi1, 0)
@@ -81,7 +81,7 @@ class Server(object):
             client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
         # pi 1 must be on
-        elif (ARRAY[ITERATION][5] == 1):
+        elif (ARRAY[ITERATION][5] == str(1)):
             # turn on pi 0
             # GPIO.output(pi1, 0)
             # GPIO.output(pi0, 1)
