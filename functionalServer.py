@@ -1,18 +1,15 @@
-import socket
-import threading
-import time
-import csv
-import RPi.GPIO as GPIO
+import socket, threading, time, csv
+#import RPi.GPIO as GPIO
 
 # initialize the output pins
 pi0 = 17
 pi1 = 27
 
-GPIO.setmode(GPIO.BCM)
+#GPIO.setmode(GPIO.BCM)
 
 # setup the pins as output pins
-GPIO.setup(pi0, GPIO.OUT)
-GPIO.setup(pi1, GPIO.OUT)
+#GPIO.setup(pi0, GPIO.OUT)
+#GPIO.setup(pi1, GPIO.OUT)
 
 
 # need to come up with a way to definitively determine who won the competition(see line 70 (may try writing to a file for permanent solution))
@@ -28,8 +25,7 @@ bind_ip = "127.0.0.1"
 # initial starting port
 bind_port = 9991
 # number of seconds before control to PI toggles
-TIME_INTERVAL = 60.0
-
+TIME_INTERVAL = 10.0
 
 # will need to store csv files into an array and use the matching index of iteration with the matching row in the csv file
 # read the file and interact with it as an object
@@ -39,6 +35,7 @@ csvReader = csv.reader(fileObject)
 # create an array of all the rows in the file
 ARRAY = [ row for row in csvReader ]
 #print ARRAY
+
 
 class Server(object):
     def __init__(self, bind_ip, bind_port):
@@ -67,39 +64,40 @@ class Server(object):
         request = client_socket.recv(1024)
         print "[*] Received: %s" % request
         
-        if str(request).lower() == self.message.lower():
-            # send back congratulations message!
-            client_socket.send("Sayanora!")
-            # show us where the winning connection came from 
-            print "[*****] Winning connection from %s:%d" % (address[0], address[1])
-            
-            #TO DO
-            # turn on led for the associated pi if ARRAY[ITERATION][3] ( a 0 or 1 value ) is one
-            if (1 == 1):
-		print 'turning on pi0 if led is off'
-		# turn on pi 0
-		GPIO.output(pi0, 1)
-		GPIO.output(pi1, 0)
-            # exit the program entirely
-            # exit(0)
-            
-        else:
+        # if correct message is not received
+        if str(request).lower() != self.message.lower():
             # send back a packet with the correct iteration number
-		# turn on pi 1
-		client_socket.send("iteration: " + str(ITERATION) + '\n')
+            client_socket.send("iteration: " + str(ITERATION) + '\n')
 
-        	    
-		GPIO.output(pi0, 0)
-		GPIO.output(pi1, 0)
+        # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
+        # pi 0 must be on
+        elif (ARRAY[ITERATION][5] == 0):
+            # turn on pi 0
+            # GPIO.output(pi0, 1)
+            # GPIO.output(pi1, 0)
+            # send back congratulations message!
+            client_socket.send("Congrulations!")
+            print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+        # pi 1 must be on
+        elif (ARRAY[ITERATION][5] == 1):
+            # turn on pi 0
+            # GPIO.output(pi1, 0)
+            # GPIO.output(pi0, 1)
+            # send back congratulations message!
+            client_socket.send("Congrulations!")
+            print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+        # verify integrity of the if statements
+        else:
+            print "This should not happen"
             
-        # close the connection 
+        # always close the connection 
         client_socket.close()
     
     # function that the server instance loops through
     def mainloop(self):
         
         # user friendly information (will have issues with two server threads printing at same time... look into boundedSemaphores)
-        print "[*] Listening on %s:%d" % (self.ip, self.port)
+        print "[*] Listening on %s:%d" % (self.ip, int(self.port))
         
         addressInUse = True 
         # ensures that if the timing doesn't line up exactly, the thread will wait until the addressInUse is released and then start its mainloop
@@ -117,11 +115,13 @@ class Server(object):
                 pass
             
 
+        # loop to handle client requests
         while True: 
             
             try:
                 # ensures that 1 second before the port change, the socket times out, which allows the thread to end
                 self.socket.settimeout(TIME_INTERVAL-1) 
+                
                 # return value is a tuple(client is a socket object, address is the address of the client socket)
                 client, addr  = self.socket.accept()
                 
@@ -142,43 +142,44 @@ class Server(object):
 starttime = time.time()
 
 # create the servers
-server1 = Server(bind_ip, bind_port)
-server2 = Server(bind_ip, 1501)
+server0 = Server(bind_ip, int(ARRAY[ITERATION][1]))
+server1 = Server(bind_ip, int(ARRAY[ITERATION][3]))
 
 # create the threads
+client_handler0 = threading.Thread(target=server0.mainloop)
+client_handler0.start()
 client_handler1 = threading.Thread(target=server1.mainloop)
 client_handler1.start()
-client_handler2 = threading.Thread(target=server2.mainloop)
-client_handler2.start()
 
 # NOTE port numbers must be greater than 1023 if not using sudo privileges
 
 while True:
     
     if ( (time.time() - starttime) - TIME_INTERVAL) >= 0:
-        # TO DO
-        # will read in from the array at the beginning
-        # change port to a new value
-        newPort1 = 9051
-        newPort2 = 9489
+        # increment the global variable 
+        ITERATION += 1
+        
+        # change port to a new value in list
+        newPort0 = int(ARRAY[ITERATION][1])
+        newPort1 = int(ARRAY[ITERATION][3])
         
         # resetup the starttime counter
         starttime = time.time()
+        
         # recreate the server
+        server0 = Server(bind_ip, newPort0)
         server1 = Server(bind_ip, newPort1)
-        server2 = Server(bind_ip, newPort2)
         
         # change the message on the server
-        server1.changeMessage('test1')
-        server2.changeMessage('test2')
+        server0.changeMessage(str(ARRAY[ITERATION][2]))
+        server1.changeMessage(str(ARRAY[ITERATION][4]))
         
         # respawn the threads
+        client_handler0 = threading.Thread(target=server0.mainloop)
+        client_handler0.start()
         client_handler1 = threading.Thread(target=server1.mainloop)
         client_handler1.start()
-        client_handler2 = threading.Thread(target=server2.mainloop)
-        client_handler2.start()
         
-         # increment the global variable 
-        ITERATION += 1
+         
         
 # make sure to run GPIO.cleanup()
