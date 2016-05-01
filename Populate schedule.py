@@ -30,8 +30,10 @@ for i in range(0, 4487):
     #count goes up
     count += 1
     #assign ledControl either a 0 or a 1, randomly
-    ledControl = randint(0,1)
-    
+    if (count %2 == 0):
+    	ledControl = 1
+    else: 
+    	ledControl = 0
     #randomly pick a portNumber by a random element in the portList
     portNum = portList[randint(0, len(portList)-1)]
     #remove that element so that the same port can not be picked twice
