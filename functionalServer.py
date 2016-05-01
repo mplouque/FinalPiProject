@@ -70,6 +70,8 @@ class Server(object):
         if str(request).lower().strip("\n") != self.message.lower():
             # send back a packet with the correct iteration number
             client_socket.send("iteration: " + str(ITERATION) + '\n')
+	    GPIO.output(pi0, 0)
+	    GPIO.output(pi1, 0)
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
@@ -80,6 +82,7 @@ class Server(object):
             # send back congratulations message!
             client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+	    GPIO.cleanup()
         # pi 1 must be on
         elif (str(ARRAY[ITERATION][5]) == str(1)):
             # turn on pi 0
