@@ -61,47 +61,42 @@ class Server(object):
 
     # client-handling thread
     def handle_client(self, client_socket, address):
-	global pi0Level
-        global pi1Level
+       Global pi0Level
+	   Global pi1Level
 	   # print out what the client sends
         request = client_socket.recv(1024)
         print "[*] Received: %s" % request
         
         # if correct message is not received
-	print (str(request).lower() , self.message.lower())
+		print (str(request).lower() , self.message.lower())
  
         if str(request).lower().strip("\n") != self.message.lower():
             # send back a packet with the correct iteration number
             client_socket.send("iteration: " + str(ITERATION) + '\n')
-	    pi0Level = 0
-            pi1Level = 0
+			pi0Level = 0
+			pi1Level = 0
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(0)) and (str(ARRAY[ITERATION][2]) == str(request.lower().strip("\n"))):
+        elif (str(ARRAY[ITERATION][5]) == str(0)):
             # turn on pi 0
-	    pi0Level = 1
+			pi0Level = 1
             pi1Level = 0
             # send back congratulations message!
-            client_socket.send("Congratulations!")
+            client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
-	    #GPIO.cleanup()
+	    GPIO.cleanup()
         # pi 1 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(1)) and (str(ARRAY[ITERATION][4]) == str(request.lower().strip("\n"))):
-
-            # turn on pi 1
+        elif (str(ARRAY[ITERATION][5]) == str(1)):
+            # turn on pi 0
             pi0Level = 0	
             pi1Level = 1
-	    # send back congratulations message!
-            client_socket.send("Congratulations!")
+			# send back congratulations message!
+            client_socket.send("Congrulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
         # verify integrity of the if statements
         else:
-	    client_socket.send("iteration: " + str(ITERATION) + '\n')
-	    pi0Level = 0
-            pi1Level = 0
-
-
+            print "This should not happen"
             
 	print (str(request).lower().strip("\n") == self.message.lower().strip())
 
@@ -176,10 +171,10 @@ client_handler1.start()
 # NOTE port numbers must be greater than 1023 if not using sudo privileges
 
 while True:
-    global pi0Level
-    global pi1Level
-    GPIO.output(pi0, pi0Level)
-    GPIO.output(pi1, pi1Level)
+    Global pi0Level
+	Global pi1Level
+	GPIO.output(pi0, pi0Level)
+	GPIO.output(pi1, pi1Level)
     if ( (time.time() - starttime) - TIME_INTERVAL) >= 0:
         # increment the global variable 
         ITERATION += 1
