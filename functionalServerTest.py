@@ -192,31 +192,31 @@ class Server(object):
                 break
 
 def winner():
-    global pi0Level
-    global pi1Level
+global pi0Level
+global pi1Level
 
     ###INSERT CODE FOR SOUND HERE####
-    try:
+try:
         # stop current music
-        pygame.mixer.music.stop()
-        # play the music associated with the new Room
-        pygame.mixer.music.load('GoalShout.wav')
-        # play music forever and start from the beginning
-        pygame.mixer.music.play(-1, 0.0)
-    except:
-        pygame.mixer.music.stop()
-        #mutes the music to give the illusion that the music stopped. 
-        pygame.mixer.music.set_volume(0.0)
+pygame.mixer.music.stop()
+    # play the music associated with the new Room
+pygame.mixer.music.load('GoalShout.wav')
+    # play music forever and start from the beginning
+pygame.mixer.music.play(-1, 0.0)
+except:
+pygame.mixer.music.stop()
+    #mutes the music to give the illusion that the music stopped. 
+pygame.mixer.music.set_volume(0.0)
 
 
-    timeToBlink = 10.0
-    newTime = time.time()+timeToBlink
-    while (time.time() < newTime):
-        #print "light shuld be on"
-    else: 
-        print "light shuld be of"
-        pi0Level = 0
-        pi1Level = 0
+timeToBlink = 10.0
+newTime = time.time()+timeToBlink
+while (time.time() < newTime):
+print "light shuld be on"
+else: 
+print "light shuld be of"
+pi0Level = 0
+pi1Level = 0
 
 # initialize the time   
 starttime = time.time()
