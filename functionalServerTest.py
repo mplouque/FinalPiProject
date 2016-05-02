@@ -1,7 +1,6 @@
 import socket, threading, time, csv
 import RPi.GPIO as GPIO
 import pygame
-from pygame import *
 pygame.init()
 
 DEBUG = True
@@ -212,9 +211,14 @@ def winner():
     timeToBlink = 10.0
     newTime = time.time()+timeToBlink
     while (time.time() < newTime):
-        print "light shuld be on"
+		pass
     else: 
         print "light shuld be of"
+        pygame.mixer.music.stop()
+        #mutes the music to give the illusion that the music stopped. 
+        pygame.mixer.music.set_volume(0.0)
+    
+
         pi0Level = 0
         pi1Level = 0
 
