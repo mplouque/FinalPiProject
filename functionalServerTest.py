@@ -92,11 +92,15 @@ class Server(object):
                 pi0Level = 1
                 pi1Level = 0
                 # send back congratulations message!
-                client_socket.send("\nCongratulations!")
+				client_socket.send("Congratulations!\n")
+				winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
-                if (DEBUG):
-                    print "Correct Message But No LED control for server0,"
+				client_socket.send("iteration: " + str(ITERATION) + '\n')
+				pi0Level = 0
+				pi1Level = 0
+				if (DEBUG):
+					print "Correct Message But No LED control for server0,"
 	    #GPIO.cleanup()
         #pi 1 must be on
         #If the message matches the correct corresponding message in the csv file 
@@ -109,11 +113,17 @@ class Server(object):
                 pi0Level = 0	
                 pi1Level = 1
                 # send back congratulations message!
-                client_socket.send("\nCongratulations!")
+                client_socket.send("Congratulations!\n")
+				winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
-                if (DEBUG):
-                    print "Correct Message but no LED control for server1"
+				client_socket.send("iteration: " + str(ITERATION) + '\n')
+				pi0Level = 0
+				pi1Level = 0
+
+
+				if (DEBUG):
+					print "Correct Message but no LED control for server1"
         # verify integrity of the if statements
         else:
 	        if (DEBUG):
@@ -188,11 +198,13 @@ def winner():
 
     timeToBlink = 10.0
     newTime = time.time()+timeToBlink
-	#while (time.time() < newTime):
-#		return   
-#    else:
-#        pi0Level = 0
-#        pi1Level = 1
+	while (time.time() < newTime):
+		print "light shuld be on"
+		return
+	else: 
+		print "light shuld be of"
+		pi0Level = 0
+		pi1Level = 0
 
 # initialize the time   
 starttime = time.time()
