@@ -78,7 +78,7 @@ class Server(object):
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(0)):
+        elif (str(ARRAY[ITERATION][5]) == str(0)) and (str(ARRAY[ITERATION][2]) == str(request.lower().strip("\n"))):
             # turn on pi 0
 	    pi0Level = 1
             pi1Level = 0
@@ -87,16 +87,21 @@ class Server(object):
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
 	    #GPIO.cleanup()
         # pi 1 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(1)):
-            # turn on pi 0
+        elif (str(ARRAY[ITERATION][5]) == str(1)) and (str(ARRAY[ITERATION][4]) == str(request.lower().strip("\n"))):
+
+            # turn on pi 1
             pi0Level = 0	
             pi1Level = 1
 	    # send back congratulations message!
-            client_socket.send("Congrulations!")
+            client_socket.send("Congratulations!")
             print "[*****] Winning connection from %s:%d" % (address[0], address[1])
         # verify integrity of the if statements
         else:
-            print "This should not happen"
+	    client_socket.send("iteration: " + str(ITERATION) + '\n')
+	    pi0Level = 0
+            pi1Level = 0
+
+
             
 	print (str(request).lower().strip("\n") == self.message.lower().strip())
 
