@@ -21,7 +21,7 @@ ABSOLUTE_MAX_NUMBER_OF_CONNECTIONS = 5
 ITERATION = 1
  
 # change to actual assigned IP on day of cyberstorm
-bind_ip = "192.168.0.112"
+bind_ip = "192.168.1.135"
 # initial starting port
 bind_port = 9991
 # number of seconds before control to PI toggles
