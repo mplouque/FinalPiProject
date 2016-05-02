@@ -1,5 +1,8 @@
 import socket, threading, time, csv
 import RPi.GPIO as GPIO
+import pygame
+from pygame import *
+pygame.init()
 
 DEBUG = True
 # initialize the output pins
@@ -96,12 +99,12 @@ class Server(object):
                 winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
-				client_socket.send("iteration: " + str(ITERATION) + '\n')
-				pi0Level = 0
-				pi1Level = 0
-				if (DEBUG):
-					print "Correct Message But No LED control for server0,"
-	    #GPIO.cleanup()
+                client_socket.send("iteration: " + str(ITERATION) + '\n')
+                pi0Level = 0
+                pi1Level = 0
+                if (DEBUG):
+                    print "Correct Message But No LED control for server0,"
+        #GPIO.cleanup()
         #pi 1 must be on
         #If the message matches the correct corresponding message in the csv file 
         elif (str(ARRAY[ITERATION][4]).lower() == str(request.lower().strip("\n"))):
@@ -110,28 +113,28 @@ class Server(object):
             #If the LED control is a 1
             if (str(ARRAY[ITERATION][5]) == str(1)):
                 # turn on pi 1
-                pi0Level = 0	
+                pi0Level = 0    
                 pi1Level = 1
                 # send back congratulations message!
                 client_socket.send("Congratulations!\n")
                 winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
-				client_socket.send("iteration: " + str(ITERATION) + '\n')
-				pi0Level = 0
-				pi1Level = 0
+                client_socket.send("iteration: " + str(ITERATION) + '\n')
+                pi0Level = 0
+                pi1Level = 0
 
 
-				if (DEBUG):
-					print "Correct Message but no LED control for server1"
+                if (DEBUG):
+                    print "Correct Message but no LED control for server1"
         # verify integrity of the if statements
         else:
-	        if (DEBUG):
-				print "Shouldn\'t happen because of the first if"
+            if (DEBUG):
+                print "Shouldn\'t happen because of the first if"
             
-				client_socket.send("iteration: " + str(ITERATION) + '\n')
-				pi0Level = 0
-				pi1Level = 0
+                client_socket.send("iteration: " + str(ITERATION) + '\n')
+                pi0Level = 0
+                pi1Level = 0
 
 
             
@@ -193,7 +196,17 @@ def winner():
     global pi1Level
 
     ###INSERT CODE FOR SOUND HERE####
-
+    try:
+        # stop current music
+        pygame.mixer.music.stop()
+        # play the music associated with the new Room
+        pygame.mixer.music.load('GoalShout.wav')
+        # play music forever and start from the beginning
+        pygame.mixer.music.play(-1, 0.0)
+    except:
+        pygame.mixer.music.stop()
+        #mutes the music to give the illusion that the music stopped. 
+        pygame.mixer.music.set_volume(0.0)
 
 
     timeToBlink = 10.0
