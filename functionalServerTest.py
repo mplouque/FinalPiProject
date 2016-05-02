@@ -92,8 +92,8 @@ class Server(object):
                 pi0Level = 1
                 pi1Level = 0
                 # send back congratulations message!
-				client_socket.send("Congratulations!\n")
-				winner()
+                client_socket.send("Congratulations!\n")
+                winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
 				client_socket.send("iteration: " + str(ITERATION) + '\n')
@@ -114,7 +114,7 @@ class Server(object):
                 pi1Level = 1
                 # send back congratulations message!
                 client_socket.send("Congratulations!\n")
-				winner()
+                winner()
                 print "[*****] Winning connection from %s:%d" % (address[0], address[1])
             else:
 				client_socket.send("iteration: " + str(ITERATION) + '\n')
@@ -198,13 +198,13 @@ def winner():
 
     timeToBlink = 10.0
     newTime = time.time()+timeToBlink
-	while (time.time() < newTime):
-		print "light shuld be on"
-		return
-	else: 
-		print "light shuld be of"
-		pi0Level = 0
-		pi1Level = 0
+    while (time.time() < newTime):
+        print "light shuld be on"
+        return
+    else: 
+        print "light shuld be of"
+        pi0Level = 0
+        pi1Level = 0
 
 # initialize the time   
 starttime = time.time()
