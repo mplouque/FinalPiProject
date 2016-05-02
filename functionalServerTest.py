@@ -1,6 +1,7 @@
 import socket, threading, time, csv
 import RPi.GPIO as GPIO
 
+DEBUG = True
 # initialize the output pins
 pi0 = 17
 pi1 = 27
@@ -61,44 +62,71 @@ class Server(object):
 
     # client-handling thread
     def handle_client(self, client_socket, address):
-       Global pi0Level
-	   Global pi1Level
-	   # print out what the client sends
+        global pi0Level
+        global pi1Level
+        # print out what the client sends
         request = client_socket.recv(1024)
         print "[*] Received: %s" % request
         
         # if correct message is not received
-		print (str(request).lower() , self.message.lower())
+        print (str(request).lower() , self.message.lower())
  
-        if str(request).lower().strip("\n") != self.message.lower():
+        if (str(request).lower().strip("\n") != self.message.lower()):
             # send back a packet with the correct iteration number
-            client_socket.send("iteration: " + str(ITERATION) + '\n')
-			pi0Level = 0
-			pi1Level = 0
+            if (DEBUG):
+                print "Access Denied, Wrong Message"
+            client_socket.send("Iteration: " + str(ITERATION) + '\n')
+            pi0Level = 0
+            pi1Level = 0
 
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(0)):
-            # turn on pi 0
-			pi0Level = 1
-            pi1Level = 0
-            # send back congratulations message!
-            client_socket.send("Congrulations!")
-            print "[*****] Winning connection from %s:%d" % (address[0], address[1])
-	    GPIO.cleanup()
-        # pi 1 must be on
-        elif (str(ARRAY[ITERATION][5]) == str(1)):
-            # turn on pi 0
-            pi0Level = 0	
-            pi1Level = 1
-			# send back congratulations message!
-            client_socket.send("Congrulations!")
-            print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+        #If the message matches the correct corresponding message in the csv file 
+        elif (str(ARRAY[ITERATION][2]) == str(request.lower().strip("\n"))):
+            if (DEBUG):
+                print "Correct message for pi0"
+            #If the LED control is a 0
+            if (str(ARRAY[ITERATION][5]) == str(0)):
+                print "turning on LED"
+                # turn on pi 0
+                pi0Level = 1
+                pi1Level = 0
+                # send back congratulations message!
+                client_socket.send("\nCongratulations!")
+                print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+            else:
+                if (DEBUG):
+                    print "Correct Message But No LED control for server0,"
+	    #GPIO.cleanup()
+        #pi 1 must be on
+        #If the message matches the correct corresponding message in the csv file 
+        elif (str(ARRAY[ITERATION][4]) == str(request.lower().strip("\n"))):
+            if (DEBUG):
+                print "correct message for pi1"
+            #If the LED control is a 1
+            if (str(ARRAY[ITERATION][5]) == str(1)):
+                # turn on pi 1
+                pi0Level = 0	
+                pi1Level = 1
+                # send back congratulations message!
+                client_socket.send("\nCongratulations!")
+                print "[*****] Winning connection from %s:%d" % (address[0], address[1])
+            else:
+                if (DEBUG):
+                    print "Correct Message but no LED control for server1"
         # verify integrity of the if statements
         else:
-            print "This should not happen"
+	        if (DEBUG):
+                print "Shouldnt happen because of the first if"
             
-	print (str(request).lower().strip("\n") == self.message.lower().strip())
+            client_socket.send("iteration: " + str(ITERATION) + '\n')
+            pi0Level = 0
+            pi1Level = 0
+
+
+            
+        if (DEBUG):
+            print (str(request).lower().strip("\n") == self.message.lower().strip())
 
         # always close the connection 
         client_socket.close()
@@ -150,6 +178,22 @@ class Server(object):
                 print "terminating thread\n"
                 break
 
+def winner():
+    global pi0Level
+    global pi1Level
+
+    ###INSERT CODE FOR SOUND HERE####
+
+
+
+    timeToBlink = 10.0
+    newTime = time.time()+timeToBlink
+    while time.time() < newTime
+         return   
+    else:
+        pi0Level = 0
+        pi1Level = 1
+
 # initialize the time   
 starttime = time.time()
 
@@ -171,10 +215,10 @@ client_handler1.start()
 # NOTE port numbers must be greater than 1023 if not using sudo privileges
 
 while True:
-    Global pi0Level
-	Global pi1Level
-	GPIO.output(pi0, pi0Level)
-	GPIO.output(pi1, pi1Level)
+    global pi0Level
+    global pi1Level
+    GPIO.output(pi0, pi0Level)
+    GPIO.output(pi1, pi1Level)
     if ( (time.time() - starttime) - TIME_INTERVAL) >= 0:
         # increment the global variable 
         ITERATION += 1
