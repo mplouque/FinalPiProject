@@ -199,8 +199,7 @@ def winner():
     timeToBlink = 10.0
     newTime = time.time()+timeToBlink
     while (time.time() < newTime):
-        print "light shuld be on"
-        return
+        #print "light shuld be on"
     else: 
         print "light shuld be of"
         pi0Level = 0
