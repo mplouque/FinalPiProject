@@ -22,7 +22,7 @@ ABSOLUTE_MAX_NUMBER_OF_CONNECTIONS = 5
 ITERATION = 1
  
 # change to actual assigned IP on day of cyberstorm
-bind_ip = "192.168.1.135"
+bind_ip = "192.168.0.166"
 # initial starting port
 bind_port = 9991
 # number of seconds before control to PI toggles
@@ -82,7 +82,7 @@ class Server(object):
         # Note: LED Logic (which server has control of the LED is handled by the Arduino Multiplexer)
         # pi 0 must be on
         #If the message matches the correct corresponding message in the csv file 
-        elif (str(ARRAY[ITERATION][2]) == str(request.lower().strip("\n"))):
+        elif (str(ARRAY[ITERATION][2]).lower() == str(request.lower().strip("\n"))):
             if (DEBUG):
                 print "Correct message for pi0"
             #If the LED control is a 0
@@ -100,7 +100,7 @@ class Server(object):
 	    #GPIO.cleanup()
         #pi 1 must be on
         #If the message matches the correct corresponding message in the csv file 
-        elif (str(ARRAY[ITERATION][4]) == str(request.lower().strip("\n"))):
+        elif (str(ARRAY[ITERATION][4]).lower() == str(request.lower().strip("\n"))):
             if (DEBUG):
                 print "correct message for pi1"
             #If the LED control is a 1
@@ -117,11 +117,11 @@ class Server(object):
         # verify integrity of the if statements
         else:
 	        if (DEBUG):
-                print "Shouldnt happen because of the first if"
+				print "Shouldn\'t happen because of the first if"
             
-            client_socket.send("iteration: " + str(ITERATION) + '\n')
-            pi0Level = 0
-            pi1Level = 0
+				client_socket.send("iteration: " + str(ITERATION) + '\n')
+				pi0Level = 0
+				pi1Level = 0
 
 
             
@@ -188,11 +188,11 @@ def winner():
 
     timeToBlink = 10.0
     newTime = time.time()+timeToBlink
-    while time.time() < newTime
-         return   
-    else:
-        pi0Level = 0
-        pi1Level = 1
+	#while (time.time() < newTime):
+#		return   
+#    else:
+#        pi0Level = 0
+#        pi1Level = 1
 
 # initialize the time   
 starttime = time.time()
